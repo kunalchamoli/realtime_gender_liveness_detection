@@ -1,18 +1,17 @@
-from keras.models import model_from_json
-from PIL import Image
-from imageio import imread
+import os
 import numpy as np
-#from scipy.misc import imresize, imsave
+from PIL import Image
+from tensorflow.keras.models import model_from_json
 IMG_SIZE = 24
 
 
 def load_eye_model():
-    json_file = open('eye_model.json', 'r')
+    json_file = open(os.path.join('saved_models', 'eye_model', 'eye_model.json'), 'r')
     loaded_model_json = json_file.read()
     json_file.close()
     loaded_model = model_from_json(loaded_model_json)
     # load weights into new model
-    loaded_model.load_weights("eye_model.h5")
+    loaded_model.load_weights(os.path.join('saved_models', 'eye_model',"eye_model.h5"))
     loaded_model.compile(loss='binary_crossentropy',
                          optimizer='adam', metrics=['accuracy'])
     return loaded_model

@@ -1,3 +1,4 @@
+import os
 import cv2
 import numpy as np
 from tqdm import tqdm
@@ -16,10 +17,10 @@ def isBlinking(history, maxFrames):
 
 def init():
     # eye detection libraries
-    face_cascPath = 'haarcascade_frontalface_alt.xml'
-    open_eye_cascPath = 'haarcascade_eye_tree_eyeglasses.xml'
-    left_eye_cascPath = 'haarcascade_lefteye_2splits.xml'
-    right_eye_cascPath = 'haarcascade_righteye_2splits.xml'
+    face_cascPath = os.path.join('face_detection', 'harr_cascade','haarcascade_frontalface_alt.xml')
+    open_eye_cascPath = os.path.join('face_detection', 'harr_cascade','haarcascade_eye_tree_eyeglasses.xml')
+    left_eye_cascPath = os.path.join('face_detection', 'harr_cascade','haarcascade_lefteye_2splits.xml')
+    right_eye_cascPath = os.path.join('face_detection', 'harr_cascade','haarcascade_righteye_2splits.xml')
 
     face_detector = cv2.CascadeClassifier(face_cascPath)
     open_eyes_detector = cv2.CascadeClassifier(open_eye_cascPath)

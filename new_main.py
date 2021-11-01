@@ -5,20 +5,27 @@ import tensorflow as tf
 from collections import defaultdict
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 from tensorflow.keras.models import model_from_json
-from model import load_eye_model, predict_eye
+from model import load_eye_model, predict_eye, load_gender_model, load_emotion_model
 
 eyes_detected = defaultdict(str)
 name = "kunal"
 
-json_file = open(os.path.join('saved_models', 'emotion_model' , 'emotion_model.json'), 'r')
-loaded_model_json = json_file.read()
-json_file.close()
-emotion_model = model_from_json(loaded_model_json)
-emotion_model.load_weights(os.path.join('saved_models', 'emotion_model', 'emotion_model.h5'))
-
 cv2.ocl.setUseOpenCL(False)
 emotion_dict = {0: "Angry", 1: "Disgusted", 2: "Fearful", 3: "Happy", 4: "Neutral", 5: "Sad", 6: "Surprised"}
 
+eye_model = load_eye_model()
+gender_model = load_gender_model()
+emotion_model = load_emotion_model()
+
+facecasc = os.path.join('face_detection', 'harr_cascade', 'haarcascade_frontalface_alt.xml')
+open_eye_cascPath = os.path.join('face_detection', 'harr_cascade','haarcascade_eye_tree_eyeglasses.xml')
+left_eye_cascPath = os.path.join('face_detection', 'harr_cascade','haarcascade_lefteye_2splits.xml')
+right_eye_cascPath = os.path.join('face_detection', 'harr_cascade','haarcascade_righteye_2splits.xml')
+
+face_detector = cv2.CascadeClassifier(facecasc)
+open_eyes_detector = cv2.CascadeClassifier(open_eye_cascPath)
+left_eye_detector = cv2.CascadeClassifier(left_eye_cascPath)
+right_eye_detector = cv2.CascadeClassifier(right_eye_cascPath)
 
 def isBlinking(history, maxFrames):
     for i in range(maxFrames):
@@ -27,8 +34,6 @@ def isBlinking(history, maxFrames):
             return True
     return False
 
-eye_model = load_eye_model()
-
 # start the webcam feed
 cap = cv2.VideoCapture(0)
 while True:
@@ -36,16 +41,7 @@ while True:
     ret, frame = cap.read()
     if not ret:
         break
-    facecasc = os.path.join('face_detection', 'harr_cascade', 'haarcascade_frontalface_alt.xml')
-    open_eye_cascPath = os.path.join('face_detection', 'harr_cascade','haarcascade_eye_tree_eyeglasses.xml')
-    left_eye_cascPath = os.path.join('face_detection', 'harr_cascade','haarcascade_lefteye_2splits.xml')
-    right_eye_cascPath = os.path.join('face_detection', 'harr_cascade','haarcascade_righteye_2splits.xml')
-
-    face_detector = cv2.CascadeClassifier(facecasc)
-    open_eyes_detector = cv2.CascadeClassifier(open_eye_cascPath)
-    left_eye_detector = cv2.CascadeClassifier(left_eye_cascPath)
-    right_eye_detector = cv2.CascadeClassifier(right_eye_cascPath)
-
+    
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     faces = face_detector.detectMultiScale(gray,scaleFactor=1.3, minNeighbors=5)
 

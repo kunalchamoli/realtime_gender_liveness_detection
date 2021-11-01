@@ -12,10 +12,24 @@ def load_eye_model():
     loaded_model = model_from_json(loaded_model_json)
     # load weights into new model
     loaded_model.load_weights(os.path.join('saved_models', 'eye_model',"eye_model.h5"))
-    loaded_model.compile(loss='binary_crossentropy',
-                         optimizer='adam', metrics=['accuracy'])
     return loaded_model
 
+def load_gender_model():
+    json_file = open(os.path.join('saved_models', 'gender_model', 'age_gender.json'), 'r')
+    loaded_model_json = json_file.read()
+    json_file.close()
+    loaded_model = model_from_json(loaded_model_json)
+    # load weights into new model
+    loaded_model.load_weights(os.path.join('saved_models', 'gender_model',"age_gender.h5"))
+    return loaded_model
+
+def load_emotion_model():
+    json_file = open(os.path.join('saved_models', 'emotion_model' , 'emotion_model.json'), 'r')
+    loaded_model_json = json_file.read()
+    json_file.close()
+    loaded_model = model_from_json(loaded_model_json)
+    loaded_model.load_weights(os.path.join('saved_models', 'emotion_model', 'emotion_model.h5'))
+    return loaded_model
 
 def predict_eye(img, model):
     img = Image.fromarray(img, 'RGB').convert('L')
